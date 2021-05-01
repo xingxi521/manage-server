@@ -8,6 +8,9 @@ const logger = require('koa-logger')
 
 const users = require('./routes/users')
 const menu = require('./routes/menu')
+const roles = require('./routes/roles')
+const dept = require('./routes/dept')
+
 const log = require('./utils/log4js')
 const router = require('koa-router')()
 require('./config/db')
@@ -36,6 +39,8 @@ app.use(async (ctx, next) => {
 //一级路由加载二级路由
 router.use(users.routes(),users.allowedMethods());
 router.use(menu.routes(),menu.allowedMethods());
+router.use(roles.routes(),roles.allowedMethods());
+router.use(dept.routes(),dept.allowedMethods());
 //全局加载一下一级路由
 app.use(router.routes(), router.allowedMethods())
 
