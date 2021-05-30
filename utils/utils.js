@@ -46,8 +46,8 @@ module.exports = {
     },
     CODE,
     //验证token
-    checkToken(token,ctx,cb){
-        jwt.verify(token, config.tokenKey, (err, decoded) => {
+    async checkToken(token,ctx,cb,is){
+        jwt.verify(token, config.tokenKey, function (err, data) {
             if(err){
                 ctx.body = {
                     code:CODE.AUTH_ERROR, 
@@ -55,7 +55,8 @@ module.exports = {
                     msg:'认证失败或TOKEN过期'
                 }
             }else{
-                cb();
+                // cb.apply(is);
+                cb()
             }
         });
     }

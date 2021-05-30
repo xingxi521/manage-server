@@ -5,14 +5,17 @@ const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
+const koajwt = require('koa-jwt')
+const log = require('./utils/log4js')
+const router = require('koa-router')()
+const util = require('./utils/utils')
 
 const users = require('./routes/users')
 const menu = require('./routes/menu')
 const roles = require('./routes/roles')
 const dept = require('./routes/dept')
+const config = require('./config')
 
-const log = require('./utils/log4js')
-const router = require('koa-router')()
 require('./config/db')
 onerror(app)
 router.prefix('/api')
@@ -28,12 +31,29 @@ app.use(views(__dirname + '/views', {
 }))
 
 //logger
+// app.use(async (ctx, next) => {
+//   const start = new Date()
+//   await next()
+//   const ms = new Date() - start
+//   log.info(`${ctx.method} ${ctx.url} - ${ms}ms`)
+// })
+
 app.use(async (ctx, next) => {
-  const start = new Date()
-  await next()
-  const ms = new Date() - start
-  log.info(`${ctx.method} ${ctx.url} - ${ms}ms`)
+  log.info(`get params:${JSON.stringify(ctx.request.query)}`)
+  log.info(`post params:${JSON.stringify(ctx.request.body)}`)
+  await next().catch((err) => {
+    if (err.status == '401') {
+      ctx.status = 200;
+      ctx.body = util.fail('Token认证失败', util.CODE.AUTH_ERROR)
+    } else {
+      throw err;
+    }
+  })
 })
+
+app.use(koajwt({ secret: config.tokenKey, key: '' }).unless({
+  path: [/^\/api\/users\/login/]
+}))
 
 // routes
 //一级路由加载二级路由
