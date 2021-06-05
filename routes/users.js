@@ -54,6 +54,16 @@ router.get('/list', async function (ctx) {
   }
 });
 
+// 获取所有用户列表
+router.get('/all/list', async function(ctx){
+  try {
+    const list = await Users.find({})//查询所有数据
+    ctx.body = utils.success(list)
+  } catch (error) {
+    ctx.body = utils.fail(`查询异常:${error.stack}`)
+  }
+})
+
 //删除用户数据（软删除）
 router.post('/delete', async (ctx) => {
   const { userIds } = ctx.request.body;

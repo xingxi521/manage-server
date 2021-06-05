@@ -38,7 +38,6 @@ router.post('/operate', async (ctx)=>{
     let res, info;
     try {
         if (action == 'create') {
-            console.log(params);
             res = await Menu.create(params)
             info = '创建成功'
         } else if (action == 'edit') {
