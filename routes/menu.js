@@ -7,7 +7,7 @@ router.prefix('/menu')
 
 // 获取菜单列表
 router.post('/list', async (ctx) => {
-    const { menuName, menuState } = ctx.request.query;
+    const { menuName, menuState } = ctx.request.body;
     const params = {}
     if (menuName) params.menuName = menuName;
     if (menuState) params.menuState = menuState;
