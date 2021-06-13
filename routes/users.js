@@ -15,7 +15,7 @@ router.post('/login', async function (ctx) {
     const { userName, userPwd } = ctx.request.body;
     const res = await Users.findOne({
       userName,
-      userPwd
+      userPwd: md5(userPwd)
     }, 'userId userName userEmail state role deptId roleList');
     if (res) {
       var token = jwt.sign(res._doc, config.tokenKey, { expiresIn: '1h' });
@@ -117,11 +117,13 @@ router.post('/operate', async (ctx) => {
       return;
     }
     try {
-      const res = await Users.findOneAndUpdate({ userId }, { mobile, job, state, roleList, deptId, });
+      await Users.findOneAndUpdate({ userId }, { mobile, job, state, roleList, deptId, });
       ctx.body = utils.success({}, '更新用户数据成功');
     } catch (error) {
       ctx.body = utils.fail('更新用户数据失败');
     }
   }
 });
+
+
 module.exports = router
