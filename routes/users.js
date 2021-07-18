@@ -17,6 +17,7 @@ router.post('/login', async function (ctx) {
       userName,
       userPwd: md5(userPwd)
     }, 'userId userName userEmail state role deptId roleList');
+    console.log(md5('123456'))
     if (res) {
       var token = jwt.sign(res._doc, config.tokenKey, { expiresIn: '1h' });
       var data = res._doc;
